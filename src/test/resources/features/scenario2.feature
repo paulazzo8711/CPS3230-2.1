@@ -11,8 +11,8 @@ Feature: Searching for a specific Product
 
     Examples:
       | product        |num-products |
-      | USB          |5|
+      | USB            |5|
       | Keyboard       |5|
-      | Mouse |5|
+      | Mouse          |5|
       | Modem          |5|
-      | Samsung     |5|
+      | Samsung        |5|

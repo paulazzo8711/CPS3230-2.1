@@ -12,9 +12,9 @@ Feature: Reachability of Product Subcategories
     Then I should be taken to the details page for that product
 
     Examples:
-      | category         | subcategory  | num-products |
-      | Audio            | Headsets     | 10           |
-      | Displays         | Monitors     | 15           |
-      | External Storage | External Drives | 2      |
-      | Components       | Cpu          | 5            |
-      | Notebooks & Tablets | Tablets | 2         |
+      | category            | subcategory     | num-products |
+      | Audio               | Headsets        | 10           |
+      | Displays            | Monitors        | 15           |
+      | External Storage    | External Drives | 2            |
+      | Components          | Cpu             | 5            |
+      | Notebooks & Tablets | Tablets         | 2            |

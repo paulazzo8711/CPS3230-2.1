@@ -4,6 +4,7 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import org.junit.jupiter.api.AfterAll;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -17,18 +18,16 @@ public class ScenarioSteps {
     private static WebDriver driver;
     public static WebDriverWait wait;
     private String expectedProductTitle;
-//    private static Actions actions;
+
     private XpertTests xpertTests;
     public ScenarioSteps(){
         driver = new ChromeDriver();
         wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-//        actions = new Actions(driver);
-        xpertTests = new XpertTests(driver);
     }
     @Given("I am a user of the website")
     public void iAmAUserOfTheWebsite() {
         xpertTests = new XpertTests(driver);
-//        xpertTests.launchSite();
+
     }
 
     @When("I visit the xpert website")
@@ -51,13 +50,13 @@ public class ScenarioSteps {
 
     @Then("I should be taken to {string} subcategory page")
     public void iShouldBeTakenToSubcategoryPage(String arg0) {
-        String actualTitle = xpertTests.verifySubcategoryPage(arg0);
+        String actualTitle = xpertTests.verifySubcategoryPage();
         assertEquals(arg0, actualTitle, "The page title does not match the expected category name.");
     }
 
     @And("the page should show at least {int} products")
     public void thePageShouldShowAtLeastNumProductsProducts(int arg0) {
-        int actualProductsNumber = xpertTests.verifyProductCount(arg0);
+        int actualProductsNumber = xpertTests.verifyProductCount();
         assertTrue(actualProductsNumber >= arg0, "The category does not show the expected minimum number of products. Expected at least " + arg0 + ", but found " + actualProductsNumber);
     }
 
@@ -82,8 +81,15 @@ public class ScenarioSteps {
     }
 
     @Then("I should be taken to {string} product results page")
-    public void iShouldBeTakenToProductResultsPage(String arg0) {
-       String actualProductTitle = xpertTests.verifyProductListings(arg0);
+    public void iShouldBeTakenToProductResultsPage() {
+       String actualProductTitle = xpertTests.verifyProductListings();
         assertEquals(expectedProductTitle, actualProductTitle, "The page title does not match the expected product title.");
+    }
+    @AfterAll
+    public static void tearDown(){
+        if (driver!= null){
+            driver.quit();
+            driver = null;
+        }
     }
 }
