@@ -1,13 +1,15 @@
-package test.cps3230.xpert;
+package test.cps3230.xpert.steps;
 
+import io.cucumber.java.After;
+import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import org.junit.jupiter.api.AfterAll;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import test.cps3230.xpert.XpertTests;
 
 import java.time.Duration;
 
@@ -18,12 +20,23 @@ public class ScenarioSteps {
     private static WebDriver driver;
     public static WebDriverWait wait;
     private String expectedProductTitle;
-
     private XpertTests xpertTests;
-    public ScenarioSteps(){
-        driver = new ChromeDriver();
-        wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+    @Before
+    public void setup() {
+        System.out.println("Initializing Browser");
+        if (driver == null) {
+            driver = new ChromeDriver();
+            wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+            driver.manage().window().maximize();
+        }
+        xpertTests = new XpertTests(driver);
     }
+
+//    public ScenarioSteps(){
+//        driver = new ChromeDriver();
+//        wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+//    }
     @Given("I am a user of the website")
     public void iAmAUserOfTheWebsite() {
         xpertTests = new XpertTests(driver);
@@ -81,12 +94,12 @@ public class ScenarioSteps {
     }
 
     @Then("I should be taken to {string} product results page")
-    public void iShouldBeTakenToProductResultsPage() {
+    public void iShouldBeTakenToProductResultsPage(String arg0) {
        String actualProductTitle = xpertTests.verifyProductListings();
-        assertEquals(expectedProductTitle, actualProductTitle, "The page title does not match the expected product title.");
+        assertEquals(arg0, actualProductTitle, "The page title does not match the expected product title.");
     }
-    @AfterAll
-    public static void tearDown(){
+    @After
+    public void tearDown(){
         if (driver!= null){
             driver.quit();
             driver = null;

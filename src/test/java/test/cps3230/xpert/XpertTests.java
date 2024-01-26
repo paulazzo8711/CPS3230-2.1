@@ -8,7 +8,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import java.util.List;
 
 
-import static test.cps3230.xpert.ScenarioSteps.wait;
+import static test.cps3230.xpert.steps.ScenarioSteps.wait;
 
 public class XpertTests {
     private final WebDriver driver;
