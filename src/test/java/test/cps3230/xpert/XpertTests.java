@@ -1,82 +1,57 @@
 package test.cps3230.xpert;
-import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.time.Duration;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static test.cps3230.xpert.ScenarioSteps.wait;
 
 public class XpertTests {
-    static WebDriver driver;
-    static WebDriverWait wait;
+    private final WebDriver driver;
+    private Actions actions;
 
-    @BeforeAll
-    public static void setup() {
-        driver = new ChromeDriver();
-        driver.manage().window().maximize();
-        wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+    public XpertTests(WebDriver driver) {
+        this.driver = driver;
+        this.actions = new Actions(driver);
+    }
+
+    public void launchSite() {
         driver.get("https://www.xpert.mt");
-
+        driver.manage().window().maximize();
+//        wait();
         WebElement cookieAcceptButton = wait.until(ExpectedConditions.elementToBeClickable(By.id("eu-cookie-ok")));
-
-        // Click the cookie acceptance button
         cookieAcceptButton.click();
     }
 
-    @AfterAll
-    public static void teardown() {
-        if (driver != null) {
-            driver.quit();
-        }
-    }
-//    @Test
-//    public void testLoadXpert() {
-//
-//        int x=2;
-//
-//    }
-    @Test
-    public void testCategoryRechability(){
-//        testLoadXpert();
-        Actions actions = new Actions(driver);
-
+    public void clickAllCategories() {
         WebElement allCategories = driver.findElement(By.className("category-navigation-title"));
         actions.moveToElement(allCategories).perform();
-
-        WebElement audioCategory = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//a[contains(@href, '/en/audio')]")));
-        actions.moveToElement(audioCategory).perform();
-
-        WebElement headsetsCategory = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//a[@title='Headsets']")));
-        headsetsCategory.click();
-
+    }
+    public void clickCategory(String Category) {
+        WebElement categoryLink = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//a[contains(@class, 'with-subcategories') and contains(text(), '" + Category + "')]")));
+        actions.moveToElement(categoryLink).perform();
+    }
+    public void clickSubCategory(String subCategory) {
+        WebElement subCategoryLink = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//a[@title='" + subCategory + "']")));
+        actions.moveToElement(subCategoryLink).click().perform();
+    }
+    public String verifySubcategoryPage(String expectedSubcategory) {
         WebElement pageTitle = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@class='page-title']/h1")));
 
-        String expectedTitle = "Headsets";
-        String actualTitle = pageTitle.getText();
 
-        assertEquals(expectedTitle, actualTitle, "The page title does not match the expected category name.");
+          return pageTitle.getText();
 
-        int x=2;
     }
-    @Test
-    public void testCategoryShowsMinimumProducts() {
-        testCategoryRechability();
-        int expectedMinimum = 10;
-
+    public int verifyProductCount(int minimumCount){
         List<WebElement> products = driver.findElements(By.cssSelector(".product-grid .item-box"));
+        return products.size();
 
-        assertTrue(products.size() >= expectedMinimum, "The category does not show the expected minimum number of products. Expected at least " + expectedMinimum + ", but found " + products.size());
     }
-    @Test
-    public void testFirstProductDetailsPage() {
-        testCategoryShowsMinimumProducts();
+    public String clickFirstProduct(){
         List<WebElement> products = driver.findElements(By.cssSelector(".item-box .product-item"));
         String expectedProductTitle = null;
         if (!products.isEmpty()) {
@@ -87,21 +62,34 @@ public class XpertTests {
         } else {
             fail("No products found on the page.");
         }
-
-
-
+        return expectedProductTitle;
+    }
+    public String verifyCorrectProduct(){
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".product-name h1")));
 
         WebElement productTitleElement = driver.findElement(By.cssSelector(".product-name h1"));
-        String actualProductTitle = productTitleElement.getText();
+//        String actualProductTitle = productTitleElement.getText();
 
-        int x =2;
-        // Verify that the product details page has the correct title
-        assertEquals(expectedProductTitle, actualProductTitle);
+
+        return productTitleElement.getText();
+    }
+    public void searchForProduct(String productName){
+        WebElement searchInputBox = driver.findElement(By.id("small-searchterms"));
+        searchInputBox.clear();
+
+
+        searchInputBox.sendKeys(productName);
+
+        WebElement searchButton = driver.findElement(By.className("search-box-button"));
+        searchButton.click();
+    }
+    public String verifyProductListings(String expectedSearchTerm){
+        WebElement searchInputField = driver.findElement(By.id("q"));
+//        String actualSearchTerm = searchInputField.getAttribute("value");
+        return searchInputField.getAttribute("value");
+//        assertEquals(expectedSearchTerm, actualSearchTerm, "The search term in the input field does not match the expected search term.");
+
+
     }
 
-    @Test
-    public void testHeadphoneCategory() {
-
-    }
 }
